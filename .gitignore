@@ -2,9 +2,11 @@
 .kotlin
 .gradle
 **/build/
-!/build/composeApp/reports/dokka/
+!/build/
 !/build/composeApp/
 !/build/composeApp/reports/
+!/build/composeApp/reports/dokka/
+!/build/composeApp/reports/dokka/**
 xcuserdata
 !src/**/build/
 local.properties

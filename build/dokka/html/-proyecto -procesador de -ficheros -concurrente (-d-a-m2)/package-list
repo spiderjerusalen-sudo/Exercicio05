@@ -1,0 +1,53 @@
+$dokka.format:html-v1
+$dokka.linkExtension:html
+$dokka.location:core////PointingToDeclaration/-proyecto -procesador de -ficheros -concurrente (-d-a-m2)/core/index.html
+$dokka.location:core//selecMultiFiche/#/PointingToDeclaration/-proyecto -procesador de -ficheros -concurrente (-d-a-m2)/core/selec-multi-fiche.html
+$dokka.location:dam2.gsr.exercicio05.core////PointingToDeclaration/-proyecto -procesador de -ficheros -concurrente (-d-a-m2)/dam2.gsr.exercicio05.core/index.html
+$dokka.location:dam2.gsr.exercicio05.core//detectarSO/#/PointingToDeclaration/-proyecto -procesador de -ficheros -concurrente (-d-a-m2)/dam2.gsr.exercicio05.core/detectar-s-o.html
+$dokka.location:dam2.gsr.exercicio05.core//from/dam2.gsr.exercicio05.core.SOEnum.Companion#kotlin.String/PointingToDeclaration/-proyecto -procesador de -ficheros -concurrente (-d-a-m2)/dam2.gsr.exercicio05.core/from.html
+$dokka.location:dam2.gsr.exercicio05.core//main/#/PointingToDeclaration/-proyecto -procesador de -ficheros -concurrente (-d-a-m2)/dam2.gsr.exercicio05.core/main.html
+$dokka.location:dam2.gsr.exercicio05.core/Operacion.ContarBytes///PointingToDeclaration/{"org.jetbrains.dokka.links.EnumEntryDRIExtra":{"key":"org.jetbrains.dokka.links.EnumEntryDRIExtra"}}-proyecto -procesador de -ficheros -concurrente (-d-a-m2)/dam2.gsr.exercicio05.core/-operacion/-contar-bytes/index.html
+$dokka.location:dam2.gsr.exercicio05.core/Operacion.ContarCaracteres///PointingToDeclaration/{"org.jetbrains.dokka.links.EnumEntryDRIExtra":{"key":"org.jetbrains.dokka.links.EnumEntryDRIExtra"}}-proyecto -procesador de -ficheros -concurrente (-d-a-m2)/dam2.gsr.exercicio05.core/-operacion/-contar-caracteres/index.html
+$dokka.location:dam2.gsr.exercicio05.core/Operacion.ContarLineas///PointingToDeclaration/{"org.jetbrains.dokka.links.EnumEntryDRIExtra":{"key":"org.jetbrains.dokka.links.EnumEntryDRIExtra"}}-proyecto -procesador de -ficheros -concurrente (-d-a-m2)/dam2.gsr.exercicio05.core/-operacion/-contar-lineas/index.html
+$dokka.location:dam2.gsr.exercicio05.core/Operacion.ContarPalabras///PointingToDeclaration/{"org.jetbrains.dokka.links.EnumEntryDRIExtra":{"key":"org.jetbrains.dokka.links.EnumEntryDRIExtra"}}-proyecto -procesador de -ficheros -concurrente (-d-a-m2)/dam2.gsr.exercicio05.core/-operacion/-contar-palabras/index.html
+$dokka.location:dam2.gsr.exercicio05.core/Operacion///PointingToDeclaration/-proyecto -procesador de -ficheros -concurrente (-d-a-m2)/dam2.gsr.exercicio05.core/-operacion/index.html
+$dokka.location:dam2.gsr.exercicio05.core/Operacion/aliasnombre/#/PointingToDeclaration/-proyecto -procesador de -ficheros -concurrente (-d-a-m2)/dam2.gsr.exercicio05.core/-operacion/aliasnombre.html
+$dokka.location:dam2.gsr.exercicio05.core/Operacion/entries/#/PointingToDeclaration/-proyecto -procesador de -ficheros -concurrente (-d-a-m2)/dam2.gsr.exercicio05.core/-operacion/entries.html
+$dokka.location:dam2.gsr.exercicio05.core/Operacion/nombreContar/#/PointingToDeclaration/-proyecto -procesador de -ficheros -concurrente (-d-a-m2)/dam2.gsr.exercicio05.core/-operacion/nombre-contar.html
+$dokka.location:dam2.gsr.exercicio05.core/Operacion/parametroComando/#/PointingToDeclaration/-proyecto -procesador de -ficheros -concurrente (-d-a-m2)/dam2.gsr.exercicio05.core/-operacion/parametro-comando.html
+$dokka.location:dam2.gsr.exercicio05.core/Operacion/valueOf/#kotlin.String/PointingToDeclaration/-proyecto -procesador de -ficheros -concurrente (-d-a-m2)/dam2.gsr.exercicio05.core/-operacion/value-of.html
+$dokka.location:dam2.gsr.exercicio05.core/Operacion/values/#/PointingToDeclaration/-proyecto -procesador de -ficheros -concurrente (-d-a-m2)/dam2.gsr.exercicio05.core/-operacion/values.html
+$dokka.location:dam2.gsr.exercicio05.core/ProceConcu///PointingToDeclaration/-proyecto -procesador de -ficheros -concurrente (-d-a-m2)/dam2.gsr.exercicio05.core/-proce-concu/index.html
+$dokka.location:dam2.gsr.exercicio05.core/ProceConcu/ProceConcu/#dam2.gsr.exercicio05.core.SOEnum/PointingToDeclaration/-proyecto -procesador de -ficheros -concurrente (-d-a-m2)/dam2.gsr.exercicio05.core/-proce-concu/-proce-concu.html
+$dokka.location:dam2.gsr.exercicio05.core/ProceConcu/iniciarProcesamiento/#kotlinx.coroutines.CoroutineScope#kotlin.collections.List[java.io.File]#kotlin.collections.List[dam2.gsr.exercicio05.core.Operacion]#kotlin.Function1[dam2.gsr.exercicio05.core.ProcessResult,kotlin.Unit]/PointingToDeclaration/-proyecto -procesador de -ficheros -concurrente (-d-a-m2)/dam2.gsr.exercicio05.core/-proce-concu/iniciar-procesamiento.html
+$dokka.location:dam2.gsr.exercicio05.core/ProcessResult.Failure///PointingToDeclaration/-proyecto -procesador de -ficheros -concurrente (-d-a-m2)/dam2.gsr.exercicio05.core/-process-result/-failure/index.html
+$dokka.location:dam2.gsr.exercicio05.core/ProcessResult.Failure/Failure/#kotlin.String#dam2.gsr.exercicio05.core.Operacion#kotlin.String/PointingToDeclaration/-proyecto -procesador de -ficheros -concurrente (-d-a-m2)/dam2.gsr.exercicio05.core/-process-result/-failure/-failure.html
+$dokka.location:dam2.gsr.exercicio05.core/ProcessResult.Failure/mensajeError/#/PointingToDeclaration/-proyecto -procesador de -ficheros -concurrente (-d-a-m2)/dam2.gsr.exercicio05.core/-process-result/-failure/mensaje-error.html
+$dokka.location:dam2.gsr.exercicio05.core/ProcessResult.Failure/nombreFichero/#/PointingToDeclaration/-proyecto -procesador de -ficheros -concurrente (-d-a-m2)/dam2.gsr.exercicio05.core/-process-result/-failure/nombre-fichero.html
+$dokka.location:dam2.gsr.exercicio05.core/ProcessResult.Failure/operacion/#/PointingToDeclaration/-proyecto -procesador de -ficheros -concurrente (-d-a-m2)/dam2.gsr.exercicio05.core/-process-result/-failure/operacion.html
+$dokka.location:dam2.gsr.exercicio05.core/ProcessResult.Success///PointingToDeclaration/-proyecto -procesador de -ficheros -concurrente (-d-a-m2)/dam2.gsr.exercicio05.core/-process-result/-success/index.html
+$dokka.location:dam2.gsr.exercicio05.core/ProcessResult.Success/Success/#kotlin.String#dam2.gsr.exercicio05.core.Operacion#kotlin.Long/PointingToDeclaration/-proyecto -procesador de -ficheros -concurrente (-d-a-m2)/dam2.gsr.exercicio05.core/-process-result/-success/-success.html
+$dokka.location:dam2.gsr.exercicio05.core/ProcessResult.Success/nombreFichero/#/PointingToDeclaration/-proyecto -procesador de -ficheros -concurrente (-d-a-m2)/dam2.gsr.exercicio05.core/-process-result/-success/nombre-fichero.html
+$dokka.location:dam2.gsr.exercicio05.core/ProcessResult.Success/operacion/#/PointingToDeclaration/-proyecto -procesador de -ficheros -concurrente (-d-a-m2)/dam2.gsr.exercicio05.core/-process-result/-success/operacion.html
+$dokka.location:dam2.gsr.exercicio05.core/ProcessResult.Success/valor/#/PointingToDeclaration/-proyecto -procesador de -ficheros -concurrente (-d-a-m2)/dam2.gsr.exercicio05.core/-process-result/-success/valor.html
+$dokka.location:dam2.gsr.exercicio05.core/ProcessResult///PointingToDeclaration/-proyecto -procesador de -ficheros -concurrente (-d-a-m2)/dam2.gsr.exercicio05.core/-process-result/index.html
+$dokka.location:dam2.gsr.exercicio05.core/ProcessResult/nombreFichero/#/PointingToDeclaration/-proyecto -procesador de -ficheros -concurrente (-d-a-m2)/dam2.gsr.exercicio05.core/-process-result/nombre-fichero.html
+$dokka.location:dam2.gsr.exercicio05.core/ProcessResult/operacion/#/PointingToDeclaration/-proyecto -procesador de -ficheros -concurrente (-d-a-m2)/dam2.gsr.exercicio05.core/-process-result/operacion.html
+$dokka.location:dam2.gsr.exercicio05.core/SO///PointingToDeclaration/-proyecto -procesador de -ficheros -concurrente (-d-a-m2)/dam2.gsr.exercicio05.core/-s-o/index.html
+$dokka.location:dam2.gsr.exercicio05.core/SOEnum.Companion///PointingToDeclaration/-proyecto -procesador de -ficheros -concurrente (-d-a-m2)/dam2.gsr.exercicio05.core/-s-o-enum/-companion/index.html
+$dokka.location:dam2.gsr.exercicio05.core/SOEnum.LINUX///PointingToDeclaration/{"org.jetbrains.dokka.links.EnumEntryDRIExtra":{"key":"org.jetbrains.dokka.links.EnumEntryDRIExtra"}}-proyecto -procesador de -ficheros -concurrente (-d-a-m2)/dam2.gsr.exercicio05.core/-s-o-enum/-l-i-n-u-x/index.html
+$dokka.location:dam2.gsr.exercicio05.core/SOEnum.MACOS///PointingToDeclaration/{"org.jetbrains.dokka.links.EnumEntryDRIExtra":{"key":"org.jetbrains.dokka.links.EnumEntryDRIExtra"}}-proyecto -procesador de -ficheros -concurrente (-d-a-m2)/dam2.gsr.exercicio05.core/-s-o-enum/-m-a-c-o-s/index.html
+$dokka.location:dam2.gsr.exercicio05.core/SOEnum.OTRO///PointingToDeclaration/{"org.jetbrains.dokka.links.EnumEntryDRIExtra":{"key":"org.jetbrains.dokka.links.EnumEntryDRIExtra"}}-proyecto -procesador de -ficheros -concurrente (-d-a-m2)/dam2.gsr.exercicio05.core/-s-o-enum/-o-t-r-o/index.html
+$dokka.location:dam2.gsr.exercicio05.core/SOEnum.WINDOWS///PointingToDeclaration/{"org.jetbrains.dokka.links.EnumEntryDRIExtra":{"key":"org.jetbrains.dokka.links.EnumEntryDRIExtra"}}-proyecto -procesador de -ficheros -concurrente (-d-a-m2)/dam2.gsr.exercicio05.core/-s-o-enum/-w-i-n-d-o-w-s/index.html
+$dokka.location:dam2.gsr.exercicio05.core/SOEnum///PointingToDeclaration/-proyecto -procesador de -ficheros -concurrente (-d-a-m2)/dam2.gsr.exercicio05.core/-s-o-enum/index.html
+$dokka.location:dam2.gsr.exercicio05.core/SOEnum/entries/#/PointingToDeclaration/-proyecto -procesador de -ficheros -concurrente (-d-a-m2)/dam2.gsr.exercicio05.core/-s-o-enum/entries.html
+$dokka.location:dam2.gsr.exercicio05.core/SOEnum/valueOf/#kotlin.String/PointingToDeclaration/-proyecto -procesador de -ficheros -concurrente (-d-a-m2)/dam2.gsr.exercicio05.core/-s-o-enum/value-of.html
+$dokka.location:dam2.gsr.exercicio05.core/SOEnum/values/#/PointingToDeclaration/-proyecto -procesador de -ficheros -concurrente (-d-a-m2)/dam2.gsr.exercicio05.core/-s-o-enum/values.html
+$dokka.location:dam2.gsr.exercicio05////PointingToDeclaration/-proyecto -procesador de -ficheros -concurrente (-d-a-m2)/dam2.gsr.exercicio05/index.html
+$dokka.location:dam2.gsr.exercicio05//App/#/PointingToDeclaration/-proyecto -procesador de -ficheros -concurrente (-d-a-m2)/dam2.gsr.exercicio05/-app.html
+$dokka.location:dam2.gsr.exercicio05//PanelDeSeleccion/#androidx.compose.ui.Modifier#kotlin.Function1[kotlin.collections.List[java.io.File],kotlin.Unit]/PointingToDeclaration/-proyecto -procesador de -ficheros -concurrente (-d-a-m2)/dam2.gsr.exercicio05/-panel-de-seleccion.html
+$dokka.location:dam2.gsr.exercicio05//main/#/PointingToDeclaration/-proyecto -procesador de -ficheros -concurrente (-d-a-m2)/dam2.gsr.exercicio05/main.html
+core
+dam2.gsr.exercicio05
+dam2.gsr.exercicio05.core
+
