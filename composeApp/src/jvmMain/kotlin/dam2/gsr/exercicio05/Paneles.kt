@@ -2,7 +2,7 @@ package dam2.gsr.exercicio05
 
 import androidx.compose.material.*
 import androidx.compose.runtime.*
-import core.selecMultiFiche
+import dam2.gsr.exercicio05.core.selecMultiFiche
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import java.io.File
