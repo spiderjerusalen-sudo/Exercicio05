@@ -13,7 +13,7 @@ typealias SO = SOEnum
  * Clase que gestiona la ejecucion concurrente de procesos externos por fichero.
  *
  * Utiliza comandos nativos del sistema operativo (wc en Unix, PowerShell en Windows)
- * a traves de ProcessBuilder para realizar las operaciones.
+ * a traves de ProcessBuilder para realizar las operaciones de conteo.
  *
  * @param so El SO detectado para construir los comandos adecuados.
  */
@@ -27,6 +27,13 @@ class ProceConcu(private val so: SO) {
 
     /**
      * Genera el array de comandos especifico para el SO y la operacion.
+     *
+     * La implementacion utiliza 'wc' para sistemas Unix (Linux/macOS) y una version
+     * adaptada con 'Get-Content' y 'Measure-Object' para Windows.
+     *
+     * @param ficheroPath La ruta absoluta del fichero a procesar.
+     * @param operacion La operacion de conteo a realizar (Lineas, Palabras, Caracteres, Bytes).
+     * @return Una lista de cadenas que representan el comando y sus argumentos.
      */
     private fun generarComandoArray(ficheroPath: String, operacion: Operacion): List<String> {
         // Escapamos la ruta del fichero para evitar problemas con espacios en los nombres de archivo
@@ -36,112 +43,108 @@ class ProceConcu(private val so: SO) {
         }
 
         return when (so) {
-            // PRIORIDAD WINDOWS (PowerShell)
             SO.WINDOWS -> {
-                when (operacion) {
-                    Operacion.ContarLineas -> listOf(
-                        "powershell",
-                        "-Command",
-                        "(Get-Content -Path $rutaEscapada | Measure-Object -Line).Lines"
-                    )
-
-                    Operacion.ContarPalabras -> listOf(
-                        "powershell",
-                        "-Command",
-                        "(Get-Content -Path $rutaEscapada | Measure-Object -Word).Words"
-                    )
-
-                    Operacion.ContarBytes -> listOf("powershell", "-Command", "(Get-Item -Path $rutaEscapada).Length")
-                    Operacion.ContarCaracteres -> listOf(
-                        "powershell",
-                        "-Command",
-                        "(Get-Content -Path $rutaEscapada | Measure-Object -Character).Characters"
-                    )
+                // Comando PowerShell: Get-Content "ruta" | Measure-Object -<parametro> | Select-Object -ExpandProperty <propiedad>
+                // Se usa 'Measure-Object' para contar y 'Select-Object' para extraer solo el valor.
+                val propiedadWindows = when (operacion) {
+                    Operacion.ContarLineas -> "Lines"
+                    Operacion.ContarPalabras -> "Words"
+                    Operacion.ContarCaracteres, Operacion.ContarBytes -> "Characters" // Ambos usan Characters en esta implementacion simple de Measure-Object
                 }
+                listOf(
+                    "powershell.exe",
+                    "-Command",
+                    "Get-Content -Path $rutaEscapada | Measure-Object ${operacion.parametroComando} | Select-Object -ExpandProperty $propiedadWindows"
+                )
             }
-
-            // AGRUPACION UNIX (LINUX y MACOS)
+            // Unix: Linux y macOS
             SO.LINUX, SO.MACOS -> {
-                // wc usa -l (lineas), -w (palabras), -m (caracteres), -c (bytes)
-                // Se usa la ruta directa ya que la gestionamos al inicio con rutaEscapada
-                val comandoBase = if (so == SO.MACOS) "/usr/bin/wc" else "wc" // Mac a veces requiere ruta completa
-                listOf(comandoBase, operacion.parametroComando, rutaEscapada)
+                // Comando Unix: wc -<parametro> "ruta"
+                listOf(
+                    "wc",
+                    operacion.parametroComando,
+                    ficheroPath
+                )
             }
-
-            SO.OTRO -> throw IllegalStateException("Error de logica interna. El SO 'OTRO' debería haber sido filtrado.")
+            SO.OTRO -> throw UnsupportedOperationException("SO no soportado.")
         }
     }
 
     /**
-     * Ejecuta ProcessBuilder para una única tarea (fichero + operación).
-     * Esta ejecución es síncrona dentro de la corrutina de Dispatchers.IO.
+     * Ejecuta el proceso externo de forma síncrona para un fichero y operacion dados.
      *
-     * @return El resultado del proceso, éxito o fallo.
+     * Este metodo utiliza [ProcessBuilder] para ejecutar el comando nativo.
+     * El tiempo de espera maximo para el proceso es de 10 segundos.
+     *
+     * @param fichero El objeto [File] a procesar.
+     * @param operacion La [Operacion] a realizar.
+     * @return Un objeto [ProcessResult] que sera [ProcessResult.Success] si tiene exito, o [ProcessResult.Failure] en caso contrario.
      */
     private fun ejecutarProceso(fichero: File, operacion: Operacion): ProcessResult {
-        if (!fichero.exists() || fichero.isDirectory) {
-            return ProcessResult.Failure(fichero.name, operacion, "Error: El fichero no existe o es un directorio.")
+        // Comprobacion rapida de existencia
+        if (!fichero.exists()) {
+            return ProcessResult.Failure(fichero.name, operacion, "Fichero no encontrado.")
         }
 
-        val comando = generarComandoArray(fichero.absolutePath, operacion)
-
         try {
-            val processBuilder = ProcessBuilder(comando)
-            processBuilder.redirectErrorStream(true) // Combina stdout y stderr
+            val comando = generarComandoArray(fichero.absolutePath, operacion)
+            val process = ProcessBuilder(comando)
+                .redirectErrorStream(true) // Combina stdout y stderr
+                .start()
 
-            val process = processBuilder.start()
-
-            // Esperar con un timeout (15 segundos)
-            val finished = process.waitFor(15, TimeUnit.SECONDS)
+            // Esperar a que el proceso termine con un timeout
+            val finished = process.waitFor(10, TimeUnit.SECONDS)
 
             if (!finished) {
                 process.destroyForcibly()
-                return ProcessResult.Failure(
-                    fichero.name,
-                    operacion,
-                    "Error: El proceso excedio el tiempo limite (15s)."
-                )
+                return ProcessResult.Failure(fichero.name, operacion, "Timeout (mas de 10 segundos).")
             }
 
-            val resultadoLinea = process.inputStream.bufferedReader().use { it.readLine()?.trim() ?: "" }
-            val exitCode = process.exitValue()
-
-            if (exitCode != 0 || resultadoLinea.isEmpty()) {
-                val errorMsg = if (exitCode != 0) "Comando nativo fallo (código $exitCode)." else "La salida fue vacía."
-                return ProcessResult.Failure(fichero.name, operacion, errorMsg)
+            // Si el comando no tuvo exito (ej: error en la ruta, permisos)
+            if (process.exitValue() != 0) {
+                val errorOutput = process.inputStream.bufferedReader().use { it.readText() }
+                // Devolver error del comando.
+                return ProcessResult.Failure(fichero.name, operacion, "Fallo del comando: $errorOutput")
             }
 
-            // Parsear el resultado (obtener solo el valor numérico)
-            val valorStr = resultadoLinea.trim().split(Regex("\\s+")).firstOrNull()
+            // Leer la salida y extraer el valor (el numero)
+            val output = process.inputStream.bufferedReader().use { it.readText() }.trim()
 
-            val valor = valorStr?.toLongOrNull()
+            // Intentar extraer el valor numerico
+            val valor = when (so) {
+                SO.WINDOWS -> output.toLongOrNull() // PowerShell devuelve el numero directamente
+                SO.LINUX, SO.MACOS -> output.trim().split(Regex("\\s+")).firstOrNull()?.toLongOrNull() // wc devuelve "  123 ruta"
+                SO.OTRO -> null // No deberia ocurrir
+            }
 
-            return if (valor != null) {
-                ProcessResult.Success(fichero.name, operacion, valor)
+            if (valor != null) {
+                return ProcessResult.Success(fichero.name, operacion, valor)
             } else {
-                ProcessResult.Failure(fichero.name, operacion, "Error de parseo del resultado: '$resultadoLinea'")
+                return ProcessResult.Failure(fichero.name, operacion, "No se pudo extraer el valor del resultado: '$output'")
             }
 
         } catch (e: IOException) {
-            return ProcessResult.Failure(
-                fichero.name,
-                operacion,
-                "Error de E/S. El comando no se encontro o no se pudo ejecutar: ${e.message}"
-            )
+            return ProcessResult.Failure(fichero.name, operacion, "Error de I/O: ${e.message}")
+        } catch (e: SecurityException) {
+            return ProcessResult.Failure(fichero.name, operacion, "Error de seguridad (permisos): ${e.message}")
         } catch (e: Exception) {
-            return ProcessResult.Failure(fichero.name, operacion, "Error desconocido al ejecutar proceso: ${e.message}")
+            return ProcessResult.Failure(fichero.name, operacion, "Error inesperado: ${e.message}")
         }
     }
 
 
     /**
-     * Inicia el procesamiento concurrente, lanzando una corrutina (Job) por cada tarea individual.
+     * Inicia el procesamiento concurrente de multiples ficheros y operaciones.
      *
-     * @param scope Ambito de Corrutinas (ej: de la UI) donde se lanzaran las tareas.
-     * @param ficheros La lista de archivos a procesar.
-     * @param operaciones El conjunto de operaciones a realizar por fichero.
-     * @param onFinalizado Callback que se llama cuando una *única* tarea (fichero + operación) ha terminado.
-     * @return Una lista de Jobs para poder esperar a la finalización de *todo* el proceso.
+     * Lanza una corrutina por cada combinacion (fichero + operacion) utilizando [Dispatchers.IO]
+     * para no bloquear la UI. Cada vez que una tarea finaliza, se llama al callback
+     * [onFinalizado] para actualizar la interfaz.
+     *
+     * @param scope El [CoroutineScope] en el que se lanzaran las corrutinas (normalmente el scope de la UI).
+     * @param ficheros Lista de [File] a procesar.
+     * @param operaciones Lista de [Operacion] a aplicar a cada fichero.
+     * @param onFinalizado Callback que se invoca cuando cada tarea (fichero + operacion) ha terminado.
+     * @return Una lista de [Job] para poder esperar a la finalizacion de *todo* el proceso (ej: usando `joinAll`).
      */
     // ⭐ CAMBIO CLAVE EN LA FIRMA
     fun iniciarProcesamiento(
@@ -175,7 +178,6 @@ class ProceConcu(private val so: SO) {
                 todosLosJobs.add(job)
             }
         }
-
         return todosLosJobs
     }
 }

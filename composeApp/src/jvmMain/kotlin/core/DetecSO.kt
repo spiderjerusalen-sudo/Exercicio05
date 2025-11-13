@@ -2,6 +2,10 @@ package dam2.gsr.exercicio05.core // <- El nuevo paquete
 
 /**
  * Detecta y devuelve el tipo de sistema operativo en el que se está ejecutando la aplicación.
+ *
+ * Utiliza la propiedad del sistema "os.name" para determinar la plataforma actual.
+ * El resultado se mapea a una de las cadenas de sistema operativo principales.
+ *
  * @return Una cadena que indica el sistema operativo: "WINDOWS", "MACOS", "LINUX", o "OTROS".
  */
 fun detectarSO(): String {

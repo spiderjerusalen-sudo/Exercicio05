@@ -9,6 +9,16 @@ import java.io.File
 import androidx.compose.ui.Modifier
 
 
+/**
+ * Componente Composable que muestra un botón para la selección de archivos mediante un diálogo nativo.
+ *
+ * El diálogo de selección ([selecMultiFiche]) se ejecuta en un hilo de I/O ([Dispatchers.IO])
+ * dentro de una corrutina para evitar el bloqueo del hilo principal de la Interfaz de Usuario (UI).
+ *
+ * @param modifier El [Modifier] de Compose para aplicar estilo y layout.
+ * @param onFicherosSeleccionados Callback que se ejecuta con la lista de [File] seleccionados
+ * cuando el usuario ha finalizado la selección. La lista está vacía si el usuario cancela.
+ */
 @Composable
 fun PanelDeSeleccion(
     modifier: Modifier = Modifier,

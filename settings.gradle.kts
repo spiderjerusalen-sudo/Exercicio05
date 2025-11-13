@@ -1,5 +1,6 @@
 rootProject.name = "Exercicio05"
 enableFeaturePreview("TYPESAFE_PROJECT_ACCESSORS")
+include(":composeApp")
 
 pluginManagement {
     repositories {
