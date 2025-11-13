@@ -25,12 +25,6 @@ import kotlinx.coroutines.joinAll   // Importación necesaria para esperar a tod
 import kotlin.system.exitProcess
 import androidx.compose.foundation.background
 
-/**
- * Componente Composable principal de la aplicación.
- *
- * Configura el estado, detecta el SO, maneja la selección de archivos,
- * inicia el procesamiento concurrente y muestra los resultados en la interfaz de usuario.
- */
 @Composable
 @Preview
 fun App() {
@@ -40,223 +34,196 @@ fun App() {
         mutableStateListOf<File>()
     }
 
-    // Resultados del procesamiento (fichero + operación + resultado/error)
-    val resultados = remember {
-        mutableStateListOf<ProcessResult>()
-    }
-
-    // Estado para saber si se está procesando actualmente
-    val isProcessing = remember {
-        mutableStateOf(false)
-    }
-
-    // Lista de Jobs activos para saber cuándo el procesamiento ha terminado completamente
-    val activeJobs = remember {
-        mutableStateListOf<Job>()
-    }
-
     // Detección del SO
-    val osDetected = remember {
-        SOEnum.from(detectarSO())
+    // Se ejecuta una vez al inicio. El resultado es el enum (SOEnum)
+    val sistemaOperativo = remember {
+        // Llama a la función que devuelve el String (ej. "WINDOWS")
+        val soString = detectarSO()
+        // Usa la función de extensión para convertirlo al enum (ej. SOEnum.WINDOWS)
+        SOEnum.from(soString)
     }
 
-    // Inicialización del procesador
-    val procesador = remember {
-        ProceConcu(osDetected)
-    }
-
-    // Coroutine Scope para manejar las operaciones asíncronas de la UI
-    val scope = rememberCoroutineScope()
-
-
-    // Operaciones que el usuario puede seleccionar
-    val operacionesDisponibles = remember {
-        Operacion.values().toList()
-    }
-    // Operaciones seleccionadas (mutableStateOf para que Compose se redibuje al cambiar)
-    val selectedOperations = remember {
-        mutableStateListOf<Operacion>(Operacion.ContarLineas) // Líneas por defecto
-    }
-
-    // Función que se pasa al PanelDeSeleccion para actualizar la lista de ficheros
-    val onFilesSelected: (List<File>) -> Unit = { files ->
-        // Limpiar la lista anterior y añadir los nuevos, forzando un redibujo.
-        ficherosSeleccionados.clear()
-        ficherosSeleccionados.addAll(files)
-
-        // Limpiar resultados anteriores
-        resultados.clear()
-    }
-
-    /**
-     * Inicia la ejecucion de todos los procesos (ficheros x operaciones).
-     */
-    val startProcessing: () -> Unit = {
-        // 1. Limpiar resultados y marcar inicio de procesamiento
-        resultados.clear()
-        isProcessing.value = true
-        activeJobs.clear()
-
-        // 2. Iniciar todas las tareas concurrentes y capturar los Jobs
-        val newJobs = procesador.iniciarProcesamiento(
-            scope = scope,
-            ficheros = ficherosSeleccionados.toList(),
-            operaciones = selectedOperations.toList(),
-            onFinalizado = { resultadoParcial ->
-                // Este callback se ejecuta en el hilo principal
-                resultados.add(resultadoParcial)
-            }
-        )
-        activeJobs.addAll(newJobs)
-
-        // 3. Lanzar una corrutina de supervisión para esperar a que todos terminen
-        scope.launch {
-            try {
-                activeJobs.joinAll() // Esperar a que todos los jobs terminen
-            } catch (e: Exception) {
-                // Manejo de cancelación o errores inesperados
-                println("Error durante joinAll: ${e.message}")
-            } finally {
-                // Esto se ejecuta SÍ o SÍ cuando todos los jobs hayan terminado (o hayan sido cancelados)
-                isProcessing.value = false
-                activeJobs.clear() // Limpiar la lista de Jobs
-            }
-        }
-    }
+    //Operaciones Seleccionadas (MutableStateSet)
+    val operaSelec = remember { mutableStateSetOf<Operacion>()} // Almacena múltiples operaciones sin duplicados
+    val resultados = remember { mutableStateListOf<ProcessResult>() }
+    val procesando = remember { mutableStateOf(false) } // Variable para el indicador de progreso
+    val scope = rememberCoroutineScope() // Ambito para lanzar la corrutina de procesamiento
+    val procesador = ProceConcu(sistemaOperativo) // Instancia de la clase de lógica
 
 
     MaterialTheme {
-        Column(
-            modifier = Modifier.fillMaxSize().padding(16.dp),
-            horizontalAlignment = Alignment.CenterHorizontally
-        ) {
-            // TÍTULO y DETECCIÓN de SO
+        Column(modifier = Modifier.fillMaxSize().background(Color(0xFFE5F1FF)).padding(24.dp)) {
+
+            //  Mostrar el SO detectado
             Text(
-                "Procesador de Ficheros Concurrente",
-                style = MaterialTheme.typography.h4,
-                modifier = Modifier.padding(bottom = 8.dp)
-            )
-            Text(
-                "SO Detectado: ${osDetected.name}",
-                style = MaterialTheme.typography.subtitle1,
-                color = if (osDetected == SOEnum.OTRO) Color.Red else MaterialTheme.colors.secondary,
-                modifier = Modifier.padding(bottom = 16.dp)
+                "SO Detectado: ${sistemaOperativo.name}",
+                style = MaterialTheme.typography.subtitle2,
+                color = MaterialTheme.colors.secondary
             )
 
-            // SECCIÓN DE SELECCIÓN DE ARCHIVOS
+            Spacer(Modifier.height(2.dp))
+
+            // Título
+            Text("Procesador de Ficheros Concurrente", style = MaterialTheme.typography.h4, modifier = Modifier.fillMaxWidth(), textAlign = TextAlign.Center)
+            Spacer(Modifier.height(8.dp))
+
+
+            // Selector de Operaciones (Checkboxes)
+            Text("Seleccione las Operaciones:", style = MaterialTheme.typography.subtitle1)
+            Spacer(Modifier.height(4.dp))
+
             Row(
-                modifier = Modifier.fillMaxWidth().padding(vertical = 10.dp),
-                horizontalArrangement = Arrangement.SpaceBetween,
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.SpaceBetween
+            ) {
+                // Iterar sobre todas las operaciones disponibles
+                Operacion.entries.forEach { operacion ->
+
+                    // Fila que contiene la casilla y el texto
+                    Row(
+                        modifier = Modifier.clickable {
+                            // Lógica de añadir/quitar del Set
+                            if (operaSelec.contains(operacion)) {
+                                operaSelec.remove(operacion)
+                            } else {
+                                operaSelec.add(operacion)
+                            }
+                        },
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
+                        Checkbox(
+                            checked = operaSelec.contains(operacion), // TRUE si está en el Set
+                            onCheckedChange = { isChecked ->
+                                if (isChecked) {
+                                    operaSelec.add(operacion)
+                                } else {
+                                    operaSelec.remove(operacion)
+                                }
+                            }
+                        )
+                        Text(operacion.nombreContar)
+                    }
+                    Spacer(Modifier.width(12.dp)) // Espacio entre las casillas
+                }
+            }
+
+            Spacer(Modifier.height(12.dp))
+
+            // AQUÍ VA EL BOTÓN DE INICIO
+            Button(
+                onClick = {
+                    // La lógica para iniciar el procesamiento concurrente va aquí
+                    scope.launch {
+                        // 1. Iniciar progreso e inicializar
+                        procesando.value = true
+                        resultados.clear() // ️ LIMPIAR RESULTADOS ANTERIORES
+
+                        // 2. Iniciar el procesamiento con el nuevo método y el callback
+                        val tareasJobs: List<Job> = procesador.iniciarProcesamiento( //  <-- CAMBIO IMPORTANTE
+                            scope = this,
+                            ficheros = ficherosSeleccionados.toList(),
+                            operaciones = operaSelec.toList(),
+                            onFinalizado = { nuevoResultado -> // <-- EL CALLBACK
+                                // Este bloque se ejecuta cada vez que una tarea (fichero+operacion) termina
+                                resultados.add(nuevoResultado) // El resultado se añade directamente
+                            }
+                        )
+
+                        // 3. Esperar a que todas las tareas (Jobs) finalicen
+                        tareasJobs.joinAll() // <-- CAMBIO IMPORTANTE: Esperamos a que todos los Jobs terminen
+
+                        // 4. Finalizar progreso
+                        procesando.value = false
+                    }
+                },
+                // Deshabilitar el botón si no hay ficheros o no hay operaciones seleccionadas
+                enabled = !procesando.value && ficherosSeleccionados.isNotEmpty() && operaSelec.isNotEmpty(),
+                modifier = Modifier.fillMaxWidth().height(50.dp)
+            ) {
+                Text("INICIAR PROCESAMIENTO CONCURRENTE")
+            }
+
+            Spacer(Modifier.height(12.dp))
+
+            // INDICADOR DE PROGRESO (opcional, pero recomendado)
+            if (procesando.value) {
+                LinearProgressIndicator(modifier = Modifier.fillMaxWidth())
+            }
+
+            // NUEVA ROW PARA ALINEAR EL PANEL DE SELECCIÓN Y EL BOTÓN DE CIERRE
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.SpaceBetween, // Esto empuja los extremos a los lados
                 verticalAlignment = Alignment.CenterVertically
             ) {
-                // Botón para seleccionar archivos
+                // 2. INTEGRACIÓN DEL PANEL DE SELECCIÓN (Botton Seleccionar Archivo)
                 PanelDeSeleccion(
-                    onFicherosSeleccionados = onFilesSelected
+                    // Implementación del Callback:
+                    onFicherosSeleccionados = { nuevaLista ->
+                        // 2a. Borrar la lista anterior
+                        ficherosSeleccionados.clear()
+                        // 2b. Añadir los nuevos ficheros seleccionados
+                        ficherosSeleccionados.addAll(nuevaLista)
+                    },
+                    // Ajustamos el modificador del PanelDeSeleccion para que tome el espacio
+                    modifier = Modifier.weight(1f).height(48.dp).padding(end = 16.dp)
                 )
 
-                // Botón para iniciar el procesamiento
+                // BOTÓN DE CIERRE (a la derecha)
                 Button(
-                    onClick = startProcessing,
-                    enabled = !isProcessing.value && ficherosSeleccionados.isNotEmpty() && selectedOperations.isNotEmpty(),
-                    colors = ButtonDefaults.buttonColors(
-                        backgroundColor = MaterialTheme.colors.primary,
-                        disabledBackgroundColor = Color.Gray.copy(alpha = 0.5f)
-                    ),
-                    modifier = Modifier.height(40.dp)
+                    onClick = { exitProcess(0) }, // Llama a la función para salir de la JVM
+                    modifier = Modifier.height(48.dp),
+                    // Color Rojo para indicar la acción final
+                    colors = ButtonDefaults.buttonColors(backgroundColor = MaterialTheme.colors.error)
                 ) {
-                    Text(if (isProcessing.value) "Procesando..." else "INICIAR PROCESAMIENTO")
-                    if (isProcessing.value) {
-                        CircularProgressIndicator(
-                            modifier = Modifier.size(20.dp).padding(start = 8.dp),
-                            color = MaterialTheme.colors.onPrimary,
-                            strokeWidth = 2.dp
-                        )
-                    }
+                    Text("SALIR", color = Color.White, style = MaterialTheme.typography.button)
                 }
+
             }
 
-            // SECCIÓN DE FICHEROS Y OPERACIONES SELECCIONADAS
-            Card(
-                modifier = Modifier.fillMaxWidth().height(200.dp).padding(vertical = 8.dp),
-                elevation = 4.dp
-            ) {
-                Column(modifier = Modifier.padding(10.dp)) {
-                    // Lista de ficheros seleccionados
-                    Text("Ficheros a procesar (${ficherosSeleccionados.size}):",
-                        style = MaterialTheme.typography.h6)
+            Spacer(Modifier.height(10.dp))
 
-                    LazyColumn(modifier = Modifier.weight(1f).fillMaxWidth()) {
-                        if (ficherosSeleccionados.isEmpty()) {
-                            item {
-                                Text("No hay ficheros seleccionados.", style = MaterialTheme.typography.body2)
-                            }
-                        }
-                        items(ficherosSeleccionados) { fichero ->
-                            Text(
-                                text = fichero.name,
-                                style = MaterialTheme.typography.body2,
-                                color = MaterialTheme.colors.onSurface.copy(alpha = 0.7f),
-                                modifier = Modifier.padding(start = 8.dp)
-                            )
-                        }
-                    }
-
-                    Divider(modifier = Modifier.padding(vertical = 4.dp))
-
-                    // Opciones de operación (Checkboxes)
-                    Text("Operaciones:", style = MaterialTheme.typography.h6)
-                    Row(
-                        modifier = Modifier.fillMaxWidth().wrapContentHeight(),
-                        horizontalArrangement = Arrangement.SpaceEvenly
-                    ) {
-                        operacionesDisponibles.forEach { operacion ->
-                            Row(verticalAlignment = Alignment.CenterVertically) {
-                                val isChecked = selectedOperations.contains(operacion)
-                                Checkbox(
-                                    checked = isChecked,
-                                    onCheckedChange = { nuevoEstado ->
-                                        if (nuevoEstado) {
-                                            selectedOperations.add(operacion)
-                                        } else {
-                                            selectedOperations.remove(operacion)
-                                        }
-                                    }
-                                )
-                                Text(operacion.nombreContar, style = MaterialTheme.typography.body2)
-                            }
-                        }
-                    }
-                }
-            }
-
-            // SECCIÓN DE RESULTADOS
+            // LISTADO DE FICHEROS A PROCESAR
             Text(
-                "Resultados (Tareas Completadas: ${resultados.size} / ${ficherosSeleccionados.size * selectedOperations.size})",
-                style = MaterialTheme.typography.h5,
-                modifier = Modifier.padding(top = 16.dp, bottom = 8.dp).fillMaxWidth(),
-                textAlign = TextAlign.Start
+                text = "Archivos para procesar (${ficherosSeleccionados.size}):",
+                style = MaterialTheme.typography.subtitle1
             )
+            Spacer(Modifier.height(8.dp))
 
-            // Lista de resultados
-            Card(
-                modifier = Modifier.fillMaxSize().weight(1f),
-                elevation = 4.dp
-            ) {
-                LazyColumn(modifier = Modifier.fillMaxSize()) {
-                    if (resultados.isEmpty() && !isProcessing.value) {
-                        item {
-                            Text("Los resultados aparecerán aquí.",
-                                modifier = Modifier.padding(10.dp),
-                                style = MaterialTheme.typography.body2,
-                                color = Color.Gray)
-                        }
+            // 3. MOSTRAR LA LISTA DE FICHEROS
+            if (ficherosSeleccionados.isNotEmpty()) {
+                // Usamos un LazyColumn para que se pueda desplazar si hay muchos archivos.
+                // El peso (1f) asegura que ocupe el espacio disponible
+                LazyColumn(modifier = Modifier.weight(if (resultados.isEmpty()) 1f else 0.5f)) {
+                    items(ficherosSeleccionados) { file ->
+                        Text(
+                            text = "» ${file.name}",
+                            modifier = Modifier.padding(vertical = 4.dp), // Aumentamos el padding para separarlos
+                            style = MaterialTheme.typography.body1 // Usamos body1 para mejor lectura
+                        )
+                        Divider()
                     }
+                }
+            } else {
+                Text("Aún no se ha seleccionado ningún fichero.")
+            }
+
+            Spacer(Modifier.height(24.dp)) // Separador visual entre las dos secciones
+
+            // Solo se muestra una vez que la lista 'resultados' se llena (al terminar la concurrencia).
+            if (resultados.isNotEmpty()) {
+                Text(
+                    "Resultados del Procesamiento (${resultados.size} tareas completadas):",
+                    style = MaterialTheme.typography.h6
+                )
+                Spacer(Modifier.height(8.dp))
+
+                //LazyColumn de Resultados
+                LazyColumn(modifier = Modifier.fillMaxSize().weight(1f)) {
                     items(resultados) { resultado ->
                         Card(
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .padding(vertical = 4.dp, horizontal = 8.dp),
-                            elevation = 2.dp,
+                            modifier = Modifier.fillMaxWidth().padding(vertical = 4.dp),
+                            elevation = 4.dp, // Usamos una elevación mayor para destacar
                             backgroundColor = when (resultado) {
                                 is ProcessResult.Success -> MaterialTheme.colors.surface
                                 is ProcessResult.Failure -> MaterialTheme.colors.error.copy(alpha = 0.1f) // Fondo sutilmente rojo

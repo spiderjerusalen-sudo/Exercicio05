@@ -1,11 +1,10 @@
 $dokka.format:html-v1
 $dokka.linkExtension:html
-$dokka.location:core////PointingToDeclaration/-proyecto -procesador de -ficheros -concurrente (-d-a-m2)/core/index.html
-$dokka.location:core//selecMultiFiche/#/PointingToDeclaration/-proyecto -procesador de -ficheros -concurrente (-d-a-m2)/core/selec-multi-fiche.html
 $dokka.location:dam2.gsr.exercicio05.core////PointingToDeclaration/-proyecto -procesador de -ficheros -concurrente (-d-a-m2)/dam2.gsr.exercicio05.core/index.html
 $dokka.location:dam2.gsr.exercicio05.core//detectarSO/#/PointingToDeclaration/-proyecto -procesador de -ficheros -concurrente (-d-a-m2)/dam2.gsr.exercicio05.core/detectar-s-o.html
 $dokka.location:dam2.gsr.exercicio05.core//from/dam2.gsr.exercicio05.core.SOEnum.Companion#kotlin.String/PointingToDeclaration/-proyecto -procesador de -ficheros -concurrente (-d-a-m2)/dam2.gsr.exercicio05.core/from.html
 $dokka.location:dam2.gsr.exercicio05.core//main/#/PointingToDeclaration/-proyecto -procesador de -ficheros -concurrente (-d-a-m2)/dam2.gsr.exercicio05.core/main.html
+$dokka.location:dam2.gsr.exercicio05.core//selecMultiFiche/#/PointingToDeclaration/-proyecto -procesador de -ficheros -concurrente (-d-a-m2)/dam2.gsr.exercicio05.core/selec-multi-fiche.html
 $dokka.location:dam2.gsr.exercicio05.core/Operacion.ContarBytes///PointingToDeclaration/{"org.jetbrains.dokka.links.EnumEntryDRIExtra":{"key":"org.jetbrains.dokka.links.EnumEntryDRIExtra"}}-proyecto -procesador de -ficheros -concurrente (-d-a-m2)/dam2.gsr.exercicio05.core/-operacion/-contar-bytes/index.html
 $dokka.location:dam2.gsr.exercicio05.core/Operacion.ContarCaracteres///PointingToDeclaration/{"org.jetbrains.dokka.links.EnumEntryDRIExtra":{"key":"org.jetbrains.dokka.links.EnumEntryDRIExtra"}}-proyecto -procesador de -ficheros -concurrente (-d-a-m2)/dam2.gsr.exercicio05.core/-operacion/-contar-caracteres/index.html
 $dokka.location:dam2.gsr.exercicio05.core/Operacion.ContarLineas///PointingToDeclaration/{"org.jetbrains.dokka.links.EnumEntryDRIExtra":{"key":"org.jetbrains.dokka.links.EnumEntryDRIExtra"}}-proyecto -procesador de -ficheros -concurrente (-d-a-m2)/dam2.gsr.exercicio05.core/-operacion/-contar-lineas/index.html
@@ -47,7 +46,6 @@ $dokka.location:dam2.gsr.exercicio05////PointingToDeclaration/-proyecto -proces
 $dokka.location:dam2.gsr.exercicio05//App/#/PointingToDeclaration/-proyecto -procesador de -ficheros -concurrente (-d-a-m2)/dam2.gsr.exercicio05/-app.html
 $dokka.location:dam2.gsr.exercicio05//PanelDeSeleccion/#androidx.compose.ui.Modifier#kotlin.Function1[kotlin.collections.List[java.io.File],kotlin.Unit]/PointingToDeclaration/-proyecto -procesador de -ficheros -concurrente (-d-a-m2)/dam2.gsr.exercicio05/-panel-de-seleccion.html
 $dokka.location:dam2.gsr.exercicio05//main/#/PointingToDeclaration/-proyecto -procesador de -ficheros -concurrente (-d-a-m2)/dam2.gsr.exercicio05/main.html
-core
 dam2.gsr.exercicio05
 dam2.gsr.exercicio05.core
 
