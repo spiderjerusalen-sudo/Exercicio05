@@ -1,55 +1,52 @@
-# ** Procesador de Ficheros Concurrente Multi-Sistema Operativo**
+# **Proyecto 5: Procesador de Ficheros Concurrente Multi-SO**
 
-## **Introducción y Requisitos Generales**
+## **Introducción y Requisitos Esenciales**
 
-Este proyecto, **Proyecto 5: Procesador de ficheros concurrente**, consiste en una aplicación desarrollada en Kotlin que gestiona el procesamiento de múltiples archivos de texto de manera simultánea.
+Aplicación desarrollada en Kotlin que gestiona el procesamiento de múltiples archivos de texto de forma **concurrente** mediante el uso de **procesos separados** (ProcessBuilder).
 
-La funcionalidad principal es:
+**Requisitos Clave:**
 
-* Permitir la selección de múltiples ficheros.  
-* Procesar cada fichero en un **proceso separado** utilizando ProcessBuilder.  
-* Ofrecer operaciones de procesamiento a elección del usuario (contar líneas, palabras o caracteres).  
-* Mostrar el progreso individual y el resultado final.  
-* Implementar manejo de errores.  
-* **Requisito clave:** La lógica de procesamiento debe ser compatible con distintos sistemas operativos (Windows, Linux, macOS).
+* Selección de múltiples ficheros.  
+* Procesamiento individual de cada fichero en un **proceso externo**.  
+* Operaciones: Contar Líneas, Palabras o Caracteres (a elección del usuario).  
+* **Compatibilidad Multi-SO:** La lógica de ejecución debe adaptarse a Windows, Linux y macOS.  
+* Muestra de progreso individual y manejo de errores.
 
-## **Descripción de Tecnologías y Arquitectura**
-
-### **Tecnologías Usadas**
+## **Arquitectura y Concurrencia**
 
 | Tecnología | Propósito |
 | :---- | :---- |
 | **Kotlin** | Lenguaje principal de desarrollo. |
-| **JavaFX / Compose** | Framework para la interfaz gráfica (UI). |
-| **ProcessBuilder** | Gestión de procesos externos para concurrencia. |
-| **Git/GitHub** | Control de versiones y repositorio público. |
+| **ProcessBuilder** | **Concurrencia real** mediante el lanzamiento de procesos hijo. |
+| **JavaFX / Compose** | Interfaz Gráfica (UI) responsiva. |
 
-### **Diseño de la Arquitectura**
+### **Diseño (Multi-SO)**
 
-*(Describe aquí brevemente cómo has estructurado el código: Patrones de concurrencia utilizados (Threads, Coroutines, etc.), la función de detección de SO, y cómo el código de la UI se separa de la lógica del procesador.)*
+La arquitectura se basa en dos capas clave:
+
+1. **Detección de SO:** Se identifica el sistema operativo (System.getProperty("os.name")) para seleccionar la estrategia de comando.  
+2. **Gestión de Comandos:** Para cada operación, ProcessBuilder construye el comando específico:  
+   * **Linux/macOS:** Utiliza los comandos nativos (wc \-l, wc \-w, wc \-c).  
+   * **Windows:** Emplea una alternativa nativa (por ejemplo, PowerShell) o una función interna de Kotlin/Java ejecutada en el proceso hijo, ya que el comando wc no está disponible por defecto.
 
 ## **Funcionalidades e Implementación**
 
-*(Detalla los pasos que sigue la aplicación: 1\. Selección de archivos. 2\. Elección de operación. 3\. Lanzamiento concurrente de procesos. 4\. Detección de SO para ejecutar el comando correcto (wc \-l en Linux/macOS vs. otro método en Windows, o tu propia solución nativa). Incluye capturas de pantalla de la interfaz en esta sección.)*
+El usuario selecciona archivos y elige las operaciones. Al iniciar, la aplicación:
 
-## **Breve Manual de Usuario**
+1. Lanza un proceso independiente por cada archivo/operación.  
+2. Lee la salida del proceso (stdout) para obtener el resultado.  
+3. Actualiza la interfaz de forma asíncrona para mostrar el progreso y el resultado final.  
+4. Captura errores de proceso (ej. archivo no encontrado) mediante el código de salida (exitCode \!= 0).
 
-1. **Ejecución:** Inicia la aplicación desde el fichero .jar o desde tu IDE.  
-2. **Selección de Archivos:** Haz clic en "Seleccionar Archivos" y elige uno o más ficheros de texto.  
-3. **Selección de Operación:** Elige la operación que deseas realizar (Líneas, Palabras, Caracteres).  
-4. **Procesar:** Pulsa el botón "Iniciar Procesamiento".  
-5. **Visualización:** Observa el progreso individual de cada archivo y el resultado final consolidado.
+## **Pruebas (Resumen)**
 
-## **Pruebas**
+Se verificó el **procesamiento correcto** de los conteos (Líneas, Palabras, Caracteres), la **detección efectiva del SO** para usar la sintaxis de comandos correcta, y el **manejo de errores** al intentar procesar ficheros inexistentes.
 
-*(Describe las pruebas que has realizado, incluyendo los casos de prueba obligatorios para el proyecto: prueba de procesamiento correcto, prueba de manejo de errores (fichero no encontrado), y la prueba de la detección del sistema operativo.)*
+## **Conclusiones y Dificultades**
 
-## **Conclusiones y Dificultades Encontradas**
-
-*(Redacta una breve conclusión sobre el proyecto. Menciona las dificultades más importantes. Por ejemplo: "La principal dificultad fue adaptar los comandos de ProcessBuilder para que fueran funcionales tanto en entornos Linux/macOS como en Windows, y manejar la concurrencia para que la interfaz no se bloqueara.")*
+El principal reto fue lograr la **compatibilidad total entre sistemas operativos**. Implementar la lógica para que ProcessBuilder funcionara de forma eficiente tanto con wc en entornos UNIX como con la solución alternativa en Windows requirió una cuidadosa capa de abstracción. Se logró mantener la UI fluida al delegar el trabajo pesado a los procesos del sistema.
 
 ## **Enlace al Repositorio del Proyecto**
 
-\[ENLACE A TU REPOSITORIO PÚBLICO EN GITHUB\]
+[https://github.com/spiderjerusalen-sudo/Exercicio05.git](https://github.com/spiderjerusalen-sudo/Exercicio05.git)
 
-*Este README resume los contenidos de la memoria del proyecto para su visualización rápida en el repositorio.*
